@@ -1,0 +1,1692 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BariSetu | Property Marketplace & Real Estate Agency in Bangladesh</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#FDF6F0',
+                            100: '#FBE8DF',
+                            500: '#D95338', // Warm Terracotta/Coral Accent
+                            600: '#C23D23',
+                            700: '#9B2D19',
+                            dark: '#1A1D20',
+                            charcoal: '#111827',
+                            muted: '#6B7280',
+                            warmbg: '#FAF9F6',
+                            cardbg: '#FFFFFF'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'Inter', 'Segoe UI', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #FAF9F6; color: #111827; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        .glass-nav { background: rgba(255, 255, 255, 0.92); backdrop-filter: blur(12px); }
+        .active-tab { border-bottom: 2px solid #D95338; color: #D95338; font-weight: 600; }
+        .badge-verified { background-color: #ECFDF5; color: #059669; border: 1px solid #A7F3D0; }
+        .badge-booking { background-color: #EFF6FF; color: #2563EB; border: 1px solid #BFDBFE; }
+    </style>
+</head>
+<body class="bg-brand-warmbg text-brand-charcoal min-h-screen flex flex-col pb-16 lg:pb-0">
+
+    <!-- Toast Notifications Container -->
+    <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none"></div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-40 glass-nav border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Identity -->
+            <a href="#" onclick="switchView('home')" class="flex items-center gap-2.5 group">
+                <div class="w-10 h-10 bg-brand-500 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-md group-hover:bg-brand-600 transition">
+                    <i data-lucide="building-2" class="w-6 h-6"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-2xl font-extrabold tracking-tight text-brand-charcoal">Bari<span class="text-brand-500">Setu</span></span>
+                    <span class="text-[10px] tracking-wider uppercase font-semibold text-brand-muted -mt-1">PropTech Agency BD</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+                <button onclick="switchView('rent')" class="nav-btn hover:text-brand-500 transition py-2" id="nav-rent">Rent</button>
+                <button onclick="switchView('buy')" class="nav-btn hover:text-brand-500 transition py-2" id="nav-buy">Buy Ready Flat</button>
+                <button onclick="switchView('book')" class="nav-btn hover:text-brand-500 transition py-2" id="nav-book">Book a Flat</button>
+                <button onclick="switchView('list-property')" class="nav-btn hover:text-brand-500 transition py-2 text-brand-500 font-semibold flex items-center gap-1.5">
+                    <i data-lucide="plus-circle" class="w-4 h-4"></i> List Property
+                </button>
+                <button onclick="switchView('locations')" class="nav-btn hover:text-brand-500 transition py-2" id="nav-locations">Locations</button>
+                <button onclick="switchView('agency-services')" class="nav-btn hover:text-brand-500 transition py-2" id="nav-agency-services">Agency Services</button>
+            </nav>
+
+            <!-- Actions -->
+            <div class="hidden md:flex items-center gap-3">
+                <button onclick="switchView('dashboard')" class="flex items-center gap-2 text-sm font-medium hover:text-brand-500 transition px-3 py-2 rounded-lg hover:bg-gray-100">
+                    <i data-lucide="heart" class="w-4 h-4"></i>
+                    <span>Saved</span>
+                    <span id="saved-count-badge" class="bg-brand-500 text-white text-xs px-1.5 py-0.5 rounded-full font-bold">0</span>
+                </button>
+                <button onclick="switchView('crm')" class="text-xs bg-gray-900 text-white font-medium px-3.5 py-2 rounded-lg hover:bg-black transition flex items-center gap-1.5">
+                    <i data-lucide="shield-check" class="w-4 h-4 text-emerald-400"></i> Agency CRM
+                </button>
+            </div>
+
+            <!-- Mobile Menu Toggle Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-lg text-gray-700 hover:bg-gray-100">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Navigation Sheet/Menu -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black/50 z-50 hidden transition-opacity flex justify-end">
+        <div class="w-4/5 max-w-sm bg-white h-full p-6 flex flex-col justify-between overflow-y-auto">
+            <div class="space-y-6">
+                <div class="flex justify-between items-center pb-4 border-b">
+                    <span class="text-xl font-bold">Bari<span class="text-brand-500">Setu</span></span>
+                    <button onclick="toggleMobileMenu()" class="p-1 rounded-lg hover:bg-gray-100"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="flex flex-col space-y-4 font-medium text-base">
+                    <button onclick="switchView('home'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Home</button>
+                    <button onclick="switchView('rent'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Rent Properties</button>
+                    <button onclick="switchView('buy'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Buy Ready Flat</button>
+                    <button onclick="switchView('book'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Book Project Flat</button>
+                    <button onclick="switchView('list-property'); toggleMobileMenu()" class="text-left py-2 text-brand-500 font-semibold">List Your Property</button>
+                    <button onclick="switchView('locations'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Explore Locations</button>
+                    <button onclick="switchView('agency-services'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Agency Services</button>
+                    <button onclick="switchView('dashboard'); toggleMobileMenu()" class="text-left py-2 hover:text-brand-500">Customer Portal</button>
+                    <button onclick="switchView('crm'); toggleMobileMenu()" class="text-left py-2 text-indigo-600 font-medium">Agency CRM Portal</button>
+                </div>
+            </div>
+            <div class="pt-6 border-t text-xs text-gray-500 space-y-2">
+                <p>Hotline: <strong class="text-gray-800">+880 9612 888 777</strong></p>
+                <p>Email: support@barisetu.com</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN VIEW CONTAINER -->
+    <main id="app-viewport" class="flex-grow">
+        <!-- Dynamic Views Injected Here -->
+    </main>
+
+    <!-- FOOTER SECTION -->
+    <footer class="bg-brand-dark text-white pt-16 pb-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 pb-12 border-b border-gray-800">
+                <!-- Col 1 -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center text-white font-bold">
+                            <i data-lucide="building-2" class="w-5 h-5"></i>
+                        </div>
+                        <span class="text-2xl font-extrabold tracking-tight">Bari<span class="text-brand-500">Setu</span></span>
+                    </div>
+                    <p class="text-gray-400 text-sm max-w-sm leading-relaxed">
+                        Bangladesh's premier PropTech platform and licensed real-estate agency. We bridge property owners, developers, and customers with verified listings and professional transaction assistance.
+                    </p>
+                    <div class="flex space-x-3 pt-2">
+                        <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-brand-500 hover:text-white transition"><i data-lucide="facebook" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-brand-500 hover:text-white transition"><i data-lucide="linkedin" class="w-4 h-4"></i></a>
+                        <a href="#" class="w-9 h-9 rounded-full bg-gray-800 flex items-center justify-center text-gray-300 hover:bg-brand-500 hover:text-white transition"><i data-lucide="instagram" class="w-4 h-4"></i></a>
+                    </div>
+                </div>
+
+                <!-- Col 2 -->
+                <div>
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Quick Links</h4>
+                    <ul class="space-y-2.5 text-sm text-gray-400">
+                        <li><a href="#" onclick="switchView('rent')" class="hover:text-white transition">Rent Apartments</a></li>
+                        <li><a href="#" onclick="switchView('buy')" class="hover:text-white transition">Buy Ready Flats</a></li>
+                        <li><a href="#" onclick="switchView('book')" class="hover:text-white transition">New Flat Bookings</a></li>
+                        <li><a href="#" onclick="switchView('locations')" class="hover:text-white transition">Explore Dhaka Areas</a></li>
+                        <li><a href="#" onclick="switchView('locations')" class="hover:text-white transition">Chattogram & Sylhet</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 3 -->
+                <div>
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Agency Services</h4>
+                    <ul class="space-y-2.5 text-sm text-gray-400">
+                        <li><a href="#" onclick="switchView('list-property')" class="hover:text-white transition">List Property for Rent</a></li>
+                        <li><a href="#" onclick="switchView('list-property')" class="hover:text-white transition">List Property for Sale</a></li>
+                        <li><a href="#" onclick="switchView('agency-services')" class="hover:text-white transition">Property Viewing Service</a></li>
+                        <li><a href="#" onclick="switchView('agency-services')" class="hover:text-white transition">Developer Marketing</a></li>
+                        <li><a href="#" onclick="switchView('agency-services')" class="hover:text-white transition">Tenant Verification</a></li>
+                    </ul>
+                </div>
+
+                <!-- Col 4 -->
+                <div>
+                    <h4 class="text-sm font-bold uppercase tracking-wider text-gray-300 mb-4">Contact Agency</h4>
+                    <div class="space-y-3 text-sm text-gray-400">
+                        <p class="flex items-start gap-2"><i data-lucide="map-pin" class="w-4 h-4 text-brand-500 shrink-0 mt-0.5"></i> Level 12, Crystal Palace, Gulshan 2, Dhaka 1212</p>
+                        <p class="flex items-center gap-2"><i data-lucide="phone" class="w-4 h-4 text-brand-500 shrink-0"></i> +880 9612 888 777</p>
+                        <p class="flex items-center gap-2"><i data-lucide="mail" class="w-4 h-4 text-brand-500 shrink-0"></i> hello@barisetu.com</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-8 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500 gap-4">
+                <p>&copy; 2026 BariSetu Real Estate Agency Ltd. All rights reserved.</p>
+                <div class="flex items-center space-x-6">
+                    <a href="#" class="hover:text-gray-300">Privacy Policy</a>
+                    <a href="#" class="hover:text-gray-300">Terms of Service</a>
+                    <a href="#" class="hover:text-gray-300">Safety & Trust Guidelines</a>
+                    <a href="#" onclick="switchView('crm')" class="hover:text-brand-500">Internal Agency Staff Login</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MOBILE BOTTOM NAVIGATION (Android Optimized) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-40 px-3 py-2 flex justify-around items-center text-xs">
+        <button onclick="switchView('home')" class="mobile-nav-btn flex flex-col items-center gap-1 text-brand-500 font-medium">
+            <i data-lucide="home" class="w-5 h-5"></i>
+            <span>Home</span>
+        </button>
+        <button onclick="switchView('rent')" class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-600 hover:text-brand-500">
+            <i data-lucide="search" class="w-5 h-5"></i>
+            <span>Search</span>
+        </button>
+        <button onclick="switchView('list-property')" class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-600 hover:text-brand-500">
+            <i data-lucide="plus-circle" class="w-5 h-5 text-brand-500"></i>
+            <span>List</span>
+        </button>
+        <button onclick="switchView('dashboard')" class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-600 hover:text-brand-500 relative">
+            <i data-lucide="heart" class="w-5 h-5"></i>
+            <span>Saved</span>
+        </button>
+        <button onclick="switchView('agency-services')" class="mobile-nav-btn flex flex-col items-center gap-1 text-gray-600 hover:text-brand-500">
+            <i data-lucide="user-check" class="w-5 h-5"></i>
+            <span>Agency</span>
+        </button>
+    </nav>
+
+    <!-- PROPERTY DETAIL MODAL -->
+    <div id="property-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
+        <div class="bg-white rounded-2xl max-w-4xl w-full max-h-[92vh] overflow-y-auto shadow-2xl relative" id="modal-content-container">
+            <!-- Modal Content Dynamically Rendered -->
+        </div>
+    </div>
+
+    <!-- VISIT REQUEST MODAL -->
+    <div id="visit-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl relative">
+            <button onclick="closeVisitModal()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700"><i data-lucide="x" class="w-6 h-6"></i></button>
+            <div class="flex items-center gap-3 mb-4">
+                <div class="w-10 h-10 rounded-full bg-brand-100 text-brand-500 flex items-center justify-center"><i data-lucide="calendar" class="w-5 h-5"></i></div>
+                <div>
+                    <h3 class="font-bold text-lg">Schedule Guided Visit</h3>
+                    <p class="text-xs text-gray-500">An agency advisor will coordinate your visit</p>
+                </div>
+            </div>
+            <form onsubmit="handleVisitSubmit(event)" class="space-y-4">
+                <input type="hidden" id="visit-property-id">
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Your Full Name</label>
+                    <input type="text" required id="visit-name" placeholder="e.g. Tanvir Hossain" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Phone Number</label>
+                    <input type="tel" required id="visit-phone" placeholder="01711XXXXXX" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Preferred Visit Date</label>
+                    <input type="date" required id="visit-date" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Preferred Time Slot</label>
+                    <select id="visit-time" class="w-full px-3.5 py-2.5 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                        <option>Morning (10:00 AM - 01:00 PM)</option>
+                        <option>Afternoon (02:00 PM - 05:00 PM)</option>
+                        <option>Evening (05:00 PM - 07:00 PM)</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-brand-500 text-white font-bold py-3 rounded-lg hover:bg-brand-600 transition shadow-md flex items-center justify-center gap-2">
+                    <i data-lucide="check-circle" class="w-5 h-5"></i> Confirm Visit Schedule
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- COMPARISON MODAL BAR -->
+    <div id="compare-bar" class="fixed bottom-16 lg:bottom-4 right-4 left-4 lg:left-auto lg:w-96 bg-gray-900 text-white p-4 rounded-xl shadow-2xl z-30 hidden flex items-center justify-between">
+        <div class="flex items-center gap-2">
+            <i data-lucide="layers" class="w-5 h-5 text-brand-500"></i>
+            <div>
+                <p class="text-sm font-semibold"><span id="compare-count">0</span> properties selected</p>
+                <p class="text-[11px] text-gray-400">Compare side-by-side</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-2">
+            <button onclick="clearCompareList()" class="text-xs text-gray-400 hover:text-white px-2 py-1">Clear</button>
+            <button onclick="showCompareModal()" class="bg-brand-500 text-white text-xs font-bold px-3 py-2 rounded-lg hover:bg-brand-600">Compare Now</button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT APPLICATION CORE -->
+    <script>
+        // ------------------------------------------------------------------
+        // STATE MANAGEMENT
+        // ------------------------------------------------------------------
+        let currentView = 'home';
+        let savedProperties = JSON.parse(localStorage.getItem('barisetu_saved')) || [];
+        let compareProperties = [];
+        let recentlyViewed = JSON.parse(localStorage.getItem('barisetu_recent')) || [];
+        let activeCategoryTab = 'Rent';
+        let activeFilters = {
+            division: '',
+            district: '',
+            thana: '',
+            type: '',
+            minPrice: 0,
+            maxPrice: 50000000,
+            beds: 'any'
+        };
+
+        // ------------------------------------------------------------------
+        // BANGLADESH GEOGRAPHY DATA
+        // ------------------------------------------------------------------
+        const BD_LOCATIONS = {
+            'Dhaka': {
+                'Dhaka': ['Gulshan-1', 'Gulshan-2', 'Banani', 'Dhanmondi', 'Uttara', 'Bashundhara R/A', 'Mirpur', 'Mohakhali', 'Badda', 'Lalmatia', 'Puran Dhaka', 'Purbachal'],
+                'Gazipur': ['Tongi', 'Gazipur Sadar', 'Chowrasta'],
+                'Narayanganj': ['Narayanganj Sadar', 'Siddhirganj', 'Kanchpur']
+            },
+            'Chattogram': {
+                'Chattogram': ['Panchlaish', 'GEC Circle', 'Agrabad', 'Khulshi', 'Halishahar', 'Nasirabad', 'Jamalkhan'],
+                'Cox\'s Bazar': ['Kalatali', 'Laboni Beach', 'Chakaria']
+            },
+            'Sylhet': {
+                'Sylhet': ['Zindabazar', 'Upatyaka R/A', 'Shahjalal Upashahar', 'Kumarpara', 'Subidbazar']
+            },
+            'Rajshahi': {
+                'Rajshahi': ['Kazi Hata', 'Padma R/A', 'Boalia', 'Upashahar']
+            },
+            'Khulna': {
+                'Khulna': ['KDA Avenue', 'Sonadanga', 'Boyra', 'Nirala']
+            },
+            'Barishal': {
+                'Barishal': ['Sadat Manzil Area', 'Band Road', 'Alekanda']
+            },
+            'Rangpur': {
+                'Rangpur': ['Dhap', 'Park Road', 'CO Bazar']
+            },
+            'Mymensingh': {
+                'Mymensingh': ['Town Hall Area', 'Charpara', 'Akua']
+            }
+        };
+
+        // ------------------------------------------------------------------
+        // REALISTIC MOCK DATA (30 PROPERTIES ACROSS BANGLADESH)
+        // ------------------------------------------------------------------
+        const PROPERTIES = [
+            {
+                id: 'BS-101',
+                title: 'South Facing Luxury Residence with Lake View',
+                purpose: 'Rent',
+                type: 'Apartment',
+                price: 75000,
+                priceUnit: '/ month',
+                division: 'Dhaka',
+                district: 'Dhaka',
+                thana: 'Gulshan-2',
+                beds: 3,
+                baths: 4,
+                size: 2450,
+                floor: '7th Floor (7/12)',
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1600566753376-12c8ab7fb75b?auto=format&fit=crop&w=800&q=80'
+                ],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'Verified Landlord (Managed by BariSetu)',
+                amenities: ['Full Generator Backup', 'Central Gas Line', '24/7 Security', '2 Car Parking', 'Lift'],
+                description: 'Exceptional 3-bedroom luxury apartment located in quiet residential pocket of Gulshan-2. Features Italian marble flooring, expansive balconies with lake views, modern fittings, and dedicated maintenance staff.'
+            },
+            {
+                id: 'BS-102',
+                title: 'Brand New Ready Flat in Block D',
+                purpose: 'Buy Ready Flat',
+                type: 'Apartment',
+                price: 18500000,
+                priceUnit: 'BDT',
+                division: 'Dhaka',
+                district: 'Dhaka',
+                thana: 'Bashundhara R/A',
+                beds: 3,
+                baths: 3,
+                size: 1820,
+                floor: '4th Floor (4/9)',
+                image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=800&q=80'
+                ],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'Developer Direct / Resale',
+                amenities: ['1 Parking', 'Smart Lock', 'Lift', 'Intercom', 'Rooftop Garden'],
+                description: 'Newly constructed 1820 sqft ready apartment with Rajuk approval. Ideal family home close to major universities and hospitals in Bashundhara. Clear legal documents verified by BariSetu agency legal team.'
+            },
+            {
+                id: 'BS-103',
+                title: 'Imperial Heights - Premier Project Booking',
+                purpose: 'Book a Flat',
+                type: 'Project',
+                price: 12500000,
+                priceUnit: 'Starting From',
+                division: 'Dhaka',
+                district: 'Dhaka',
+                thana: 'Dhanmondi',
+                beds: 4,
+                baths: 4,
+                size: 2100,
+                handover: 'December 2027',
+                developer: 'Concord Real Estate Partner',
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                gallery: [
+                    'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                    'https://images.unsplash.com/photo-1600585154526-990dced4db0d?auto=format&fit=crop&w=800&q=80'
+                ],
+                verified: true,
+                badge: 'Booking Open',
+                status: 'Booking Open',
+                amenities: ['Swimming Pool', 'Gym', 'Community Hall', 'Solar Energy', '3 High Speed Lifts'],
+                description: 'Upcoming flagship project in Dhanmondi Road 27. Modern earthquake-resistant design, flexible payment installment schedule over 36 months, booking amount starts at 10%.'
+            },
+            {
+                id: 'BS-104',
+                title: 'Family Apartment near Uttara Sector 11 Square',
+                purpose: 'Rent',
+                type: 'Apartment',
+                price: 35000,
+                priceUnit: '/ month',
+                division: 'Dhaka',
+                district: 'Dhaka',
+                thana: 'Uttara',
+                beds: 3,
+                baths: 3,
+                size: 1550,
+                floor: '3rd Floor',
+                image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'Verified Landlord',
+                amenities: ['Gas Connection', 'Lift', 'Security Guard', '1 Parking'],
+                description: 'Well-ventilated family flat available for immediate rent in Sector 11, Uttara. Very close to Uttara Metro Station, reputed schools, and shopping centers.'
+            },
+            {
+                id: 'BS-105',
+                title: 'Modern Commercial Office Space in Agrabad C/A',
+                purpose: 'Rent',
+                type: 'Office',
+                price: 110000,
+                priceUnit: '/ month',
+                division: 'Chattogram',
+                district: 'Chattogram',
+                thana: 'Agrabad',
+                beds: 0,
+                baths: 2,
+                size: 2800,
+                floor: '8th Floor',
+                image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'Commercial Building Owner',
+                amenities: ['Central AC', 'Full Power Backup', 'Fire Hydrant System', '4 Underground Parkings'],
+                description: 'Prime commercial office space in the financial hub of Chattogram. Open floor plan suitable for corporate offices, IT firms, or logistics companies.'
+            },
+            {
+                id: 'BS-106',
+                title: 'Hill View Duplex Villa in Khulshi',
+                purpose: 'Buy Ready Flat',
+                type: 'House',
+                price: 42000000,
+                priceUnit: 'BDT',
+                division: 'Chattogram',
+                district: 'Chattogram',
+                thana: 'Khulshi',
+                beds: 5,
+                baths: 6,
+                size: 4200,
+                floor: 'Duplex (G+1)',
+                image: 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Premium Listing',
+                owner: 'Private Owner',
+                amenities: ['Private Lawn', 'Servant Quarter', 'CCTV Security', '24/7 Water', 'Car Garage'],
+                description: 'Exclusive 5-bedroom luxury duplex villa in serene Khulshi residential area. Features architectural landscaping, imported sanitaryware, and peaceful surroundings.'
+            },
+            {
+                id: 'BS-107',
+                title: 'Spacious Residential Flat in Shahjalal Upashahar',
+                purpose: 'Rent',
+                type: 'Apartment',
+                price: 22000,
+                priceUnit: '/ month',
+                division: 'Sylhet',
+                district: 'Sylhet',
+                thana: 'Shahjalal Upashahar',
+                beds: 3,
+                baths: 2,
+                size: 1400,
+                floor: '2nd Floor',
+                image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'NRB Owner (Agency Managed)',
+                amenities: ['Gas Line', 'Balcony', '24h Water', 'Parking'],
+                description: 'Nice, quiet family apartment in Sylhet Upashahar. Managed directly by BariSetu agency on behalf of UK Non-Resident Bangladeshi owner.'
+            },
+            {
+                id: 'BS-108',
+                title: 'Green View Apartment near Padma River Drive',
+                purpose: 'Buy Ready Flat',
+                type: 'Apartment',
+                price: 6800000,
+                priceUnit: 'BDT',
+                division: 'Rajshahi',
+                district: 'Rajshahi',
+                thana: 'Padma R/A',
+                beds: 3,
+                baths: 3,
+                size: 1380,
+                floor: '5th Floor',
+                image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'Original Owner',
+                amenities: ['Lift', 'Generator', 'Community Space', 'Wide Balcony'],
+                description: 'Bright 3 BHK ready flat in prime Rajshahi location. Uninterrupted fresh breeze from the Padma River embankment, excellent educational neighborhood.'
+            },
+            {
+                id: 'BS-109',
+                title: 'Affordable Single Room / Sublet in Mirpur 10',
+                purpose: 'Rent',
+                type: 'Room',
+                price: 8500,
+                priceUnit: '/ month',
+                division: 'Dhaka',
+                district: 'Dhaka',
+                thana: 'Mirpur',
+                beds: 1,
+                baths: 1,
+                size: 280,
+                floor: '4th Floor',
+                image: 'https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Owner Listed',
+                owner: 'Family House Owner',
+                amenities: ['Wi-Fi', 'Shared Kitchen', 'Gas', 'Filtered Water'],
+                description: 'Clean, secure single room available for jobholder/student (male/female). Located 3 minutes walking distance from Mirpur 10 Metro Station.'
+            },
+            {
+                id: 'BS-110',
+                title: 'Riverfront Oasis - Upcoming Project in KDA Avenue',
+                purpose: 'Book a Flat',
+                type: 'Project',
+                price: 7500000,
+                priceUnit: 'Starting From',
+                division: 'Khulna',
+                district: 'Khulna',
+                thana: 'KDA Avenue',
+                beds: 3,
+                baths: 3,
+                size: 1600,
+                handover: 'June 2028',
+                developer: 'Khulna Homes Ltd',
+                image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Upcoming Project',
+                status: 'Upcoming',
+                amenities: ['Play Area', 'Gym', 'Automated Parking', 'Rooftop Lounge'],
+                description: 'Pre-launch registration now open. Modern architectural standard with high structural safety rating in Khulna city center.'
+            }
+        ];
+
+        // Fill remaining dataset up to 30 items programmatically for deep catalog experience
+        const additionalAreas = [
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Banani', type: 'Apartment', purp: 'Rent', pr: 95000, sz: 2200 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Lalmatia', type: 'Apartment', purp: 'Buy Ready Flat', pr: 16000000, sz: 1750 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Purbachal', type: 'Project', purp: 'Book a Flat', pr: 9800000, sz: 1900 },
+            { div: 'Chattogram', dist: 'Chattogram', thana: 'Panchlaish', type: 'Apartment', purp: 'Rent', pr: 28000, sz: 1450 },
+            { div: 'Chattogram', dist: 'Chattogram', thana: 'GEC Circle', type: 'Shop', purp: 'Rent', pr: 45000, sz: 420 },
+            { div: 'Sylhet', dist: 'Sylhet', thana: 'Zindabazar', type: 'Office', purp: 'Rent', pr: 35000, sz: 1100 },
+            { div: 'Barishal', dist: 'Barishal', thana: 'Band Road', type: 'House', purp: 'Buy Ready Flat', pr: 12000000, sz: 2600 },
+            { div: 'Rangpur', dist: 'Rangpur', thana: 'Dhap', type: 'Apartment', purp: 'Rent', pr: 15000, sz: 1250 },
+            { div: 'Mymensingh', dist: 'Mymensingh', thana: 'Town Hall Area', type: 'Apartment', purp: 'Rent', pr: 18000, sz: 1350 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Badda', type: 'Hostel/Mess', purp: 'Rent', pr: 6000, sz: 180 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Mohakhali', type: 'Office', purp: 'Rent', pr: 150000, sz: 3200 },
+            { div: 'Dhaka', dist: 'Gazipur', thana: 'Tongi', type: 'Apartment', purp: 'Buy Ready Flat', pr: 5200000, sz: 1150 },
+            { div: 'Dhaka', dist: 'Narayanganj', thana: 'Narayanganj Sadar', type: 'Apartment', purp: 'Rent', pr: 16000, sz: 1200 },
+            { div: 'Chattogram', dist: 'Cox\'s Bazar', thana: 'Kalatali', type: 'Apartment', purp: 'Buy Ready Flat', pr: 11000000, sz: 1300 },
+            { div: 'Sylhet', dist: 'Sylhet', thana: 'Kumarpara', type: 'Apartment', purp: 'Buy Ready Flat', pr: 7900000, sz: 1400 },
+            { div: 'Rajshahi', dist: 'Rajshahi', thana: 'Boalia', type: 'Apartment', purp: 'Rent', pr: 14000, sz: 1100 },
+            { div: 'Khulna', dist: 'Khulna', thana: 'Sonadanga', type: 'Apartment', purp: 'Buy Ready Flat', pr: 6200000, sz: 1300 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Dhanmondi', type: 'Apartment', purp: 'Rent', pr: 55000, sz: 1850 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Gulshan-1', type: 'Project', purp: 'Book a Flat', pr: 29000000, sz: 2800 },
+            { div: 'Dhaka', dist: 'Dhaka', thana: 'Uttara', type: 'Buy Ready Flat', purp: 'Buy Ready Flat', pr: 14500000, sz: 1650 }
+        ];
+
+        additionalAreas.forEach((item, idx) => {
+            const idNum = 111 + idx;
+            PROPERTIES.push({
+                id: `BS-${idNum}`,
+                title: `${item.type} for ${item.purp} in ${item.thana}`,
+                purpose: item.purp,
+                type: item.type,
+                price: item.pr,
+                priceUnit: item.purp === 'Rent' ? '/ month' : 'BDT',
+                division: item.div,
+                district: item.dist,
+                thana: item.thana,
+                beds: item.type === 'Office' || item.type === 'Shop' ? 0 : 3,
+                baths: 2,
+                size: item.sz,
+                floor: 'Medium Floor',
+                image: `https://images.unsplash.com/photo-${1500000000000 + (idx * 100000)}?auto=format&fit=crop&w=800&q=80` || 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=800&q=80',
+                gallery: ['https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80'],
+                verified: true,
+                badge: 'Agency Verified',
+                owner: 'Verified Property Owner',
+                amenities: ['Gas', 'Lift', 'Security', 'Backup Power'],
+                description: `Verified listing in ${item.thana}, ${item.dist}. Superb connection to transportation, clean ownership documents, inspected by BariSetu staff.`
+            });
+        });
+
+        // ------------------------------------------------------------------
+        // CRM MOCK LEADS DATA
+        // ------------------------------------------------------------------
+        let CRM_LEADS = [
+            { id: 'L-901', name: 'Rafiqul Islam', phone: '01712345678', property: 'BS-101 (Gulshan 2)', budget: '৳75,000/mo', status: 'Visit Scheduled', date: '2026-03-02', notes: 'Interested in lake view. Scheduled for Sat 11 AM.' },
+            { id: 'L-902', name: 'Nusrat Jahan', phone: '01898765432', property: 'BS-102 (Bashundhara)', budget: '৳1.85 Cr', status: 'Negotiation', date: '2026-03-01', notes: 'Bank loan processing with City Bank.' },
+            { id: 'L-903', name: 'Kamrul Hasan', phone: '01911223344', property: 'BS-103 (Dhanmondi)', budget: '৳1.25 Cr', status: 'New Lead', date: '2026-03-03', notes: 'Requested project brochure and payment plan.' },
+            { id: 'L-904', name: 'Dr. S. Ahmed', phone: '01555667788', property: 'BS-106 (Khulshi Villa)', budget: '৳4.20 Cr', status: 'Contacted', date: '2026-02-28', notes: 'Needs high security hill duplex.' }
+        ];
+
+        // ------------------------------------------------------------------
+        // INITIALIZATION
+        // ------------------------------------------------------------------
+        window.addEventListener('DOMContentLoaded', () => {
+            renderView('home');
+            updateSavedCount();
+            if (window.lucide) lucide.createIcons();
+        });
+
+        function switchView(viewName) {
+            currentView = viewName;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            renderView(viewName);
+            
+            // Highlight active desktop nav button
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('text-brand-500', 'font-bold'));
+            const activeNav = document.getElementById(`nav-${viewName}`);
+            if (activeNav) activeNav.classList.add('text-brand-500', 'font-bold');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        }
+
+        function showToast(msg, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = `p-4 rounded-xl shadow-xl text-white text-sm font-semibold flex items-center justify-between gap-3 transform transition-all duration-300 translate-y-2 pointer-events-auto ${type === 'success' ? 'bg-emerald-600' : 'bg-brand-500'}`;
+            toast.innerHTML = `
+                <div class="flex items-center gap-2">
+                    <i data-lucide="${type === 'success' ? 'check-circle' : 'info'}" class="w-5 h-5 shrink-0"></i>
+                    <span>${msg}</span>
+                </div>
+                <button onclick="this.parentElement.remove()" class="text-white/80 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
+            `;
+            container.appendChild(toast);
+            if (window.lucide) lucide.createIcons();
+            setTimeout(() => {
+                toast.classList.add('opacity-0', '-translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3500);
+        }
+
+        // ------------------------------------------------------------------
+        // ROUTER / VIEW RENDERER
+        // ------------------------------------------------------------------
+        function renderView(view) {
+            const viewport = document.getElementById('app-viewport');
+            
+            switch (view) {
+                case 'home':
+                    viewport.innerHTML = renderHomeView();
+                    break;
+                case 'rent':
+                    viewport.innerHTML = renderListingView('Rent');
+                    break;
+                case 'buy':
+                    viewport.innerHTML = renderListingView('Buy Ready Flat');
+                    break;
+                case 'book':
+                    viewport.innerHTML = renderListingView('Book a Flat');
+                    break;
+                case 'list-property':
+                    viewport.innerHTML = renderListPropertyView();
+                    break;
+                case 'locations':
+                    viewport.innerHTML = renderLocationsView();
+                    break;
+                case 'agency-services':
+                    viewport.innerHTML = renderAgencyServicesView();
+                    break;
+                case 'dashboard':
+                    viewport.innerHTML = renderDashboardView();
+                    break;
+                case 'crm':
+                    viewport.innerHTML = renderCRMView();
+                    break;
+                default:
+                    viewport.innerHTML = renderHomeView();
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        // ------------------------------------------------------------------
+        // VIEW: HOMEPAGE
+        // ------------------------------------------------------------------
+        function renderHomeView() {
+            return `
+                <!-- HERO SECTION -->
+                <section class="relative bg-gradient-to-b from-brand-50 to-brand-warmbg py-12 lg:py-20 border-b border-gray-200 overflow-hidden">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                        <div class="text-center max-w-3xl mx-auto mb-8 sm:mb-10">
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-brand-100 text-brand-600 mb-4 border border-brand-500/20">
+                                <i data-lucide="shield-check" class="w-4 h-4"></i> Bangladesh's Trusted PropTech Platform
+                            </span>
+                            <h1 class="text-3xl sm:text-5xl font-extrabold tracking-tight text-brand-charcoal leading-tight">
+                                Find. Rent. Buy. Book. <br class="hidden sm:inline"/>
+                                <span class="text-brand-500">Verified Properties</span> across Bangladesh
+                            </h1>
+                            <p class="mt-4 text-base sm:text-lg text-brand-muted leading-relaxed">
+                                BariSetu acts as your dedicated agency intermediary — shortlisting, inspecting, and guiding your property deals with zero friction.
+                            </p>
+                        </div>
+
+                        <!-- UNIFIED HERO SEARCH BOX -->
+                        <div class="max-w-4xl mx-auto bg-white rounded-2xl shadow-xl border border-gray-200/80 p-4 sm:p-6">
+                            <!-- Hero Tabs -->
+                            <div class="flex border-b border-gray-200 mb-6 gap-2 sm:gap-6 overflow-x-auto no-scrollbar">
+                                <button onclick="setHeroTab('Rent')" id="tab-Rent" class="pb-3 text-sm font-bold active-tab flex items-center gap-2 whitespace-nowrap">
+                                    <i data-lucide="key" class="w-4 h-4"></i> Rent Properties
+                                </button>
+                                <button onclick="setHeroTab('Buy Ready Flat')" id="tab-Buy Ready Flat" class="pb-3 text-sm font-bold text-gray-500 hover:text-brand-500 flex items-center gap-2 whitespace-nowrap">
+                                    <i data-lucide="home" class="w-4 h-4"></i> Buy Ready Flat
+                                </button>
+                                <button onclick="setHeroTab('Book a Flat')" id="tab-Book a Flat" class="pb-3 text-sm font-bold text-gray-500 hover:text-brand-500 flex items-center gap-2 whitespace-nowrap">
+                                    <i data-lucide="building" class="w-4 h-4"></i> Book New Project
+                                </button>
+                            </div>
+
+                            <!-- Search Form Controls -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <!-- Location Select -->
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Division / Area</label>
+                                    <select id="hero-division" onchange="populateHeroDistricts()" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">All Bangladesh</option>
+                                        ${Object.keys(BD_LOCATIONS).map(div => `<option value="${div}">${div}</option>`).join('')}
+                                    </select>
+                                </div>
+
+                                <!-- Property Type -->
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Property Type</label>
+                                    <select id="hero-type" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">All Types</option>
+                                        <option>Apartment</option>
+                                        <option>House</option>
+                                        <option>Room</option>
+                                        <option>Sublet</option>
+                                        <option>Hostel/Mess</option>
+                                        <option>Office</option>
+                                        <option>Shop</option>
+                                    </select>
+                                </div>
+
+                                <!-- Budget Range -->
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1" id="hero-budget-label">Budget Range</label>
+                                    <select id="hero-budget" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">Any Budget</option>
+                                        <option value="15000">Under ৳15,000</option>
+                                        <option value="35000">৳15,000 - ৳35,000</option>
+                                        <option value="75000">৳35,000 - ৳75,000</option>
+                                        <option value="10000000">Under ৳1 Crore</option>
+                                        <option value="20000000">৳1 Cr - ৳2 Crore</option>
+                                        <option value="50000000">৳2 Cr+</option>
+                                    </select>
+                                </div>
+
+                                <!-- Bedrooms -->
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Bedrooms</label>
+                                    <select id="hero-beds" class="w-full bg-gray-50 border border-gray-300 rounded-xl px-3.5 py-2.5 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-brand-500">
+                                        <option value="">Any BHK</option>
+                                        <option value="1">1 BHK</option>
+                                        <option value="2">2 BHK</option>
+                                        <option value="3">3 BHK</option>
+                                        <option value="4">4+ BHK</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Hero CTAs -->
+                            <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-4 pt-4 border-t border-gray-100">
+                                <div class="flex items-center gap-2 text-xs text-gray-500">
+                                    <i data-lucide="check-circle-2" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>30+ Active Agency Listings Inspected This Week</span>
+                                </div>
+                                <div class="flex items-center gap-3 w-full sm:w-auto">
+                                    <button onclick="switchView('list-property')" class="w-full sm:w-auto px-5 py-3 border border-gray-300 rounded-xl font-semibold text-sm hover:bg-gray-50 transition text-center">
+                                        List Your Property
+                                    </button>
+                                    <button onclick="executeHeroSearch()" class="w-full sm:w-auto px-7 py-3 bg-brand-500 text-white rounded-xl font-bold text-sm hover:bg-brand-600 transition shadow-lg shadow-brand-500/25 flex items-center justify-center gap-2">
+                                        <i data-lucide="search" class="w-4 h-4"></i> Search Properties
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. POPULAR LOCATIONS IN BANGLADESH -->
+                <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between mb-8">
+                        <div>
+                            <span class="text-brand-500 font-bold text-xs uppercase tracking-wider">Top Destinations</span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-brand-charcoal mt-1">Explore Popular Locations</h2>
+                        </div>
+                        <button onclick="switchView('locations')" class="mt-2 md:mt-0 text-sm font-bold text-brand-500 hover:text-brand-600 flex items-center gap-1">
+                            View All Divisions <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                        ${renderLocationCard('Gulshan & Banani', 'Dhaka', '120+ Listings', 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&w=400&q=80')}
+                        ${renderLocationCard('Dhanmondi', 'Dhaka', '85+ Listings', 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=400&q=80')}
+                        ${renderLocationCard('Uttara Model Town', 'Dhaka', '150+ Listings', 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=400&q=80')}
+                        ${renderLocationCard('Panchlaish & Khulshi', 'Chattogram', '64+ Listings', 'https://images.unsplash.com/photo-1613977257363-707ba9348227?auto=format&fit=crop&w=400&q=80')}
+                        ${renderLocationCard('Shahjalal Upashahar', 'Sylhet', '42+ Listings', 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?auto=format&fit=crop&w=400&q=80')}
+                        ${renderLocationCard('Padma Riverfront', 'Rajshahi', '28+ Listings', 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=400&q=80')}
+                    </div>
+                </section>
+
+                <!-- 3. FEATURED RENTALS -->
+                <section class="py-12 bg-white border-y border-gray-200">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <span class="text-brand-500 font-bold text-xs uppercase tracking-wider">Verified Living Spaces</span>
+                                <h2 class="text-2xl sm:text-3xl font-extrabold text-brand-charcoal">Featured Rental Properties</h2>
+                            </div>
+                            <button onclick="switchView('rent')" class="text-sm font-bold text-brand-500 hover:underline flex items-center gap-1">
+                                Browse Rentals <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${PROPERTIES.filter(p => p.purpose === 'Rent').slice(0, 3).map(p => renderPropertyCard(p)).join('')}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. READY FLATS FOR SALE -->
+                <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between mb-8">
+                        <div>
+                            <span class="text-emerald-600 font-bold text-xs uppercase tracking-wider">Immediate Possession</span>
+                            <h2 class="text-2xl sm:text-3xl font-extrabold text-brand-charcoal">Ready Flats for Sale</h2>
+                        </div>
+                        <button onclick="switchView('buy')" class="text-sm font-bold text-brand-500 hover:underline flex items-center gap-1">
+                            Browse All Sales <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${PROPERTIES.filter(p => p.purpose === 'Buy Ready Flat').slice(0, 3).map(p => renderPropertyCard(p)).join('')}
+                    </div>
+                </section>
+
+                <!-- 5. NEW PROJECT BOOKINGS -->
+                <section class="py-16 bg-gradient-to-br from-gray-900 to-brand-dark text-white">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex items-center justify-between mb-10">
+                            <div>
+                                <span class="text-brand-500 font-bold text-xs uppercase tracking-wider">Developer Partnerships</span>
+                                <h2 class="text-2xl sm:text-3xl font-extrabold text-white mt-1">New Flat Project Bookings</h2>
+                            </div>
+                            <button onclick="switchView('book')" class="text-sm font-bold text-brand-500 hover:text-white transition flex items-center gap-1">
+                                View All Projects <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            ${PROPERTIES.filter(p => p.purpose === 'Book a Flat').slice(0, 3).map(p => renderProjectCard(p)).join('')}
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. HOW OUR AGENCY WORKS -->
+                <section class="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <span class="text-brand-500 font-bold text-xs uppercase tracking-wider">The BariSetu Advantage</span>
+                        <h2 class="text-3xl font-extrabold text-brand-charcoal mt-1">Looking for a property? We'll help you find it.</h2>
+                        <p class="text-gray-600 text-sm mt-2">Unlike pure listing boards, BariSetu is a full-service agency that protects your time, money, and privacy.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                        ${renderStepCard(1, 'Tell Us Your Needs', 'Share your exact location, budget, and space requirements with our advisor.')}
+                        ${renderStepCard(2, 'Agency Shortlists', 'We filter through verified property owners and developers for legitimate deals.')}
+                        ${renderStepCard(3, 'Guided Visit', 'Our field agent arranges physical or virtual walkthroughs at your convenience.')}
+                        ${renderStepCard(4, 'Owner Connection', 'We bring you face-to-face with owners for honest price negotiations.')}
+                        ${renderStepCard(5, 'Closing Support', 'Assistance with rental agreements, deeds, and possession handover.')}
+                    </div>
+                </section>
+
+                <!-- 13. CTA BANNER: LIST YOUR PROPERTY -->
+                <section class="py-16 bg-brand-500 text-white relative overflow-hidden">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-8 relative z-10">
+                        <div class="max-w-xl">
+                            <h2 class="text-3xl font-extrabold leading-tight">Have a property to rent or sell in Bangladesh?</h2>
+                            <p class="text-brand-100 text-sm mt-3 leading-relaxed">
+                                Let BariSetu agency represent your property. We handle inquiry screening, physical viewings, and background verification for serious buyers and tenants.
+                            </p>
+                        </div>
+                        <div class="flex items-center gap-4 w-full md:w-auto">
+                            <button onclick="switchView('list-property')" class="w-full md:w-auto px-8 py-4 bg-white text-brand-charcoal font-bold rounded-xl hover:bg-gray-100 transition shadow-lg text-center">
+                                List Your Property Now
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            `;
+        }
+
+        // Helper Card Components for Homepage
+        function renderLocationCard(area, city, count, img) {
+            return `
+                <div onclick="filterByLocation('${city}')" class="group relative rounded-xl overflow-hidden h-40 cursor-pointer shadow-sm hover:shadow-md transition">
+                    <img src="${img}" alt="${area}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent"></div>
+                    <div class="absolute bottom-3 left-3 right-3 text-white">
+                        <h4 class="font-bold text-sm leading-snug">${area}</h4>
+                        <p class="text-[11px] text-gray-300">${city} · ${count}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderStepCard(step, title, desc) {
+            return `
+                <div class="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm relative flex flex-col justify-between">
+                    <div>
+                        <div class="w-8 h-8 rounded-full bg-brand-100 text-brand-600 font-extrabold text-sm flex items-center justify-center mb-4">0${step}</div>
+                        <h3 class="font-bold text-base text-brand-charcoal mb-2">${title}</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed">${desc}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ------------------------------------------------------------------
+        // VIEW: PROPERTY LISTINGS (RENT / BUY / BOOK)
+        // ------------------------------------------------------------------
+        function renderListingView(purpose) {
+            let filtered = PROPERTIES.filter(p => p.purpose === purpose);
+            
+            // Apply Filters if Set
+            if (activeFilters.division) {
+                filtered = filtered.filter(p => p.division === activeFilters.division);
+            }
+            if (activeFilters.type) {
+                filtered = filtered.filter(p => p.type === activeFilters.type);
+            }
+            if (activeFilters.beds && activeFilters.beds !== 'any') {
+                filtered = filtered.filter(p => p.beds == activeFilters.beds);
+            }
+
+            return `
+                <div class="bg-white border-b border-gray-200 py-6">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                            <div>
+                                <span class="text-xs font-bold text-brand-500 uppercase tracking-wider">Marketplace Explorer</span>
+                                <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-charcoal">${purpose} Properties</h1>
+                                <p class="text-xs text-gray-500 mt-1">Showing ${filtered.length} verified listings across Bangladesh</p>
+                            </div>
+                            <div class="flex items-center gap-3">
+                                <select onchange="sortListings(this.value, '${purpose}')" class="bg-gray-50 border border-gray-300 text-xs font-semibold rounded-lg px-3 py-2">
+                                    <option value="recommended">Sort: Recommended</option>
+                                    <option value="low-high">Price: Low to High</option>
+                                    <option value="high-low">Price: High to Low</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+                        <!-- LEFT SIDEBAR FILTERS -->
+                        <div class="lg:col-span-1 bg-white p-5 rounded-2xl border border-gray-200 shadow-sm h-fit space-y-6">
+                            <div class="flex items-center justify-between pb-4 border-b">
+                                <h3 class="font-bold text-base flex items-center gap-2"><i data-lucide="sliders-horizontal" class="w-4 h-4"></i> Filter Results</h3>
+                                <button onclick="resetFilters('${purpose}')" class="text-xs text-brand-500 font-semibold hover:underline">Reset</button>
+                            </div>
+
+                            <!-- Division -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Division</label>
+                                <select id="filter-division" onchange="applyFilter('division', this.value, '${purpose}')" class="w-full text-xs font-medium border border-gray-300 rounded-lg p-2.5">
+                                    <option value="">All Divisions</option>
+                                    ${Object.keys(BD_LOCATIONS).map(div => `<option value="${div}" ${activeFilters.division === div ? 'selected' : ''}>${div}</option>`).join('')}
+                                </select>
+                            </div>
+
+                            <!-- Property Type -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Property Type</label>
+                                <select id="filter-type" onchange="applyFilter('type', this.value, '${purpose}')" class="w-full text-xs font-medium border border-gray-300 rounded-lg p-2.5">
+                                    <option value="">All Types</option>
+                                    <option value="Apartment" ${activeFilters.type === 'Apartment' ? 'selected' : ''}>Apartment</option>
+                                    <option value="House" ${activeFilters.type === 'House' ? 'selected' : ''}>House</option>
+                                    <option value="Room" ${activeFilters.type === 'Room' ? 'selected' : ''}>Room / Sublet</option>
+                                    <option value="Office" ${activeFilters.type === 'Office' ? 'selected' : ''}>Office Commercial</option>
+                                    <option value="Shop" ${activeFilters.type === 'Shop' ? 'selected' : ''}>Shop Space</option>
+                                </select>
+                            </div>
+
+                            <!-- BHK Bedrooms -->
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-500 mb-2">Bedrooms (BHK)</label>
+                                <div class="grid grid-cols-4 gap-2">
+                                    ${['any', '1', '2', '3', '4'].map(b => `
+                                        <button onclick="applyFilter('beds', '${b}', '${purpose}')" class="py-2 text-xs font-bold rounded-lg border ${activeFilters.beds === b ? 'bg-brand-500 text-white border-brand-500' : 'bg-gray-50 border-gray-200 text-gray-700'}">${b === 'any' ? 'Any' : b + ' Bed'}</button>
+                                    `).join('')}
+                                </div>
+                            </div>
+
+                            <!-- Agency Verification Badge Check -->
+                            <div class="pt-4 border-t">
+                                <label class="flex items-center gap-2 text-xs font-semibold text-gray-700 cursor-pointer">
+                                    <input type="checkbox" checked class="rounded text-brand-500 focus:ring-brand-500">
+                                    <span>BariSetu Agency Inspected Only</span>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- RIGHT LISTINGS GRID -->
+                        <div class="lg:col-span-3">
+                            ${filtered.length === 0 ? `
+                                <div class="bg-white rounded-2xl border p-12 text-center">
+                                    <i data-lucide="building-2" class="w-12 h-12 text-gray-300 mx-auto mb-3"></i>
+                                    <h3 class="font-bold text-lg">No matching properties found</h3>
+                                    <p class="text-xs text-gray-500 mt-1">Try relaxing your search filter options.</p>
+                                    <button onclick="resetFilters('${purpose}')" class="mt-4 px-4 py-2 bg-brand-500 text-white text-xs font-bold rounded-lg">Reset Filters</button>
+                                </div>
+                            ` : `
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    ${filtered.map(p => purpose === 'Book a Flat' ? renderProjectCard(p) : renderPropertyCard(p)).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Card Renderer: Standard Property Card
+        function renderPropertyCard(p) {
+            const isSaved = savedProperties.includes(p.id);
+            return `
+                <div class="bg-white rounded-2xl border border-gray-200/80 shadow-sm hover:shadow-lg transition duration-300 overflow-hidden flex flex-col justify-between group">
+                    <div>
+                        <!-- Image Container -->
+                        <div class="relative h-48 overflow-hidden bg-gray-100">
+                            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full badge-verified flex items-center gap-1 shadow-sm">
+                                <i data-lucide="shield-check" class="w-3 h-3"></i> ${p.badge}
+                            </span>
+                            <button onclick="toggleSaveProperty('${p.id}', event)" class="absolute top-3 right-3 w-8 h-8 rounded-full bg-white/90 backdrop-blur text-gray-700 hover:text-brand-500 flex items-center justify-center transition shadow-md">
+                                <i data-lucide="heart" class="w-4 h-4 ${isSaved ? 'fill-brand-500 text-brand-500' : ''}"></i>
+                            </button>
+                            <div class="absolute bottom-3 left-3 bg-black/70 backdrop-blur text-white text-xs px-2.5 py-1 rounded-md font-extrabold">
+                                ৳${p.price.toLocaleString('en-BD')} <span class="text-[10px] font-normal opacity-80">${p.priceUnit}</span>
+                            </div>
+                        </div>
+
+                        <!-- Card Body -->
+                        <div class="p-4">
+                            <div class="text-[11px] font-semibold text-brand-500 uppercase tracking-wider mb-1">${p.type} · ${p.division}</div>
+                            <h3 onclick="openPropertyModal('${p.id}')" class="font-bold text-sm text-brand-charcoal line-clamp-1 hover:text-brand-500 cursor-pointer transition">${p.title}</h3>
+                            <p class="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                                <i data-lucide="map-pin" class="w-3.5 h-3.5 text-gray-400 shrink-0"></i>
+                                <span class="truncate">${p.thana}, ${p.district}</span>
+                            </p>
+
+                            <!-- Features Pill Grid -->
+                            <div class="grid grid-cols-3 gap-2 my-4 py-2 border-y border-gray-100 text-center text-[11px] text-gray-600 font-medium">
+                                <div><strong class="text-brand-charcoal block">${p.beds}</strong> Beds</div>
+                                <div><strong class="text-brand-charcoal block">${p.baths}</strong> Baths</div>
+                                <div><strong class="text-brand-charcoal block">${p.size}</strong> sqft</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer Actions -->
+                    <div class="px-4 pb-4 flex items-center justify-between gap-2">
+                        <button onclick="toggleCompare('${p.id}')" class="text-[11px] text-gray-500 hover:text-brand-charcoal font-semibold flex items-center gap-1">
+                            <i data-lucide="layers" class="w-3.5 h-3.5"></i> Compare
+                        </button>
+                        <button onclick="openPropertyModal('${p.id}')" class="px-3.5 py-2 bg-brand-50 text-brand-500 hover:bg-brand-500 hover:text-white rounded-lg font-bold text-xs transition flex items-center gap-1">
+                            View Details <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Card Renderer: Project Card (Book a Flat)
+        function renderProjectCard(p) {
+            return `
+                <div class="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden flex flex-col justify-between group text-brand-charcoal">
+                    <div>
+                        <div class="relative h-48 overflow-hidden bg-gray-100">
+                            <img src="${p.image}" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                            <span class="absolute top-3 left-3 text-[10px] font-bold px-2.5 py-1 rounded-full bg-blue-100 text-blue-800 border border-blue-300">
+                                ${p.status || 'Booking Stage'}
+                            </span>
+                        </div>
+                        <div class="p-4">
+                            <p class="text-[11px] font-bold text-indigo-600 uppercase tracking-wider">${p.developer || 'Partner Developer'}</p>
+                            <h3 onclick="openPropertyModal('${p.id}')" class="font-bold text-base text-brand-charcoal line-clamp-1 hover:text-brand-500 cursor-pointer">${p.title}</h3>
+                            <p class="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                                <i data-lucide="map-pin" class="w-3.5 h-3.5"></i> ${p.thana}, ${p.district}
+                            </p>
+
+                            <div class="mt-4 p-3 bg-gray-50 rounded-xl space-y-1.5 text-xs">
+                                <div class="flex justify-between"><span class="text-gray-500">Starting Price:</span> <strong class="text-brand-500">৳${p.price.toLocaleString('en-BD')}</strong></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Est. Handover:</span> <span class="font-semibold">${p.handover || '2027'}</span></div>
+                                <div class="flex justify-between"><span class="text-gray-500">Flat Sizes:</span> <span class="font-semibold">${p.size} sqft</span></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 pt-0">
+                        <button onclick="openVisitModal('${p.id}')" class="w-full py-2.5 bg-brand-500 text-white rounded-xl font-bold text-xs hover:bg-brand-600 transition flex items-center justify-center gap-2">
+                            <i data-lucide="file-text" class="w-4 h-4"></i> Request Booking Details
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ------------------------------------------------------------------
+        // PROPERTY DETAILS MODAL
+        // ------------------------------------------------------------------
+        function openPropertyModal(id) {
+            const p = PROPERTIES.find(item => item.id === id);
+            if (!p) return;
+
+            // Track Recently Viewed
+            if (!recentlyViewed.includes(id)) {
+                recentlyViewed.unshift(id);
+                if (recentlyViewed.length > 6) recentlyViewed.pop();
+                localStorage.setItem('barisetu_recent', JSON.stringify(recentlyViewed));
+            }
+
+            const modal = document.getElementById('property-modal');
+            const container = document.getElementById('modal-content-container');
+
+            container.innerHTML = `
+                <button onclick="closePropertyModal()" class="absolute top-4 right-4 z-20 w-9 h-9 rounded-full bg-white/90 text-gray-700 hover:text-black flex items-center justify-center shadow-md">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+
+                <!-- Modal Gallery -->
+                <div class="relative h-64 sm:h-80 bg-gray-900">
+                    <img id="modal-active-img" src="${p.image}" class="w-full h-full object-cover">
+                    <div class="absolute bottom-4 left-4 flex gap-2 overflow-x-auto p-1 bg-black/40 backdrop-blur rounded-lg">
+                        ${(p.gallery || [p.image]).map((img, i) => `
+                            <img src="${img}" onclick="document.getElementById('modal-active-img').src='${img}'" class="w-12 h-12 object-cover rounded cursor-pointer border border-white/50 hover:border-brand-500">
+                        `).join('')}
+                    </div>
+                </div>
+
+                <div class="p-6 sm:p-8 space-y-6">
+                    <!-- Title & Price Bar -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b">
+                        <div>
+                            <span class="inline-flex items-center gap-1 text-xs font-bold px-2.5 py-1 rounded-md badge-verified mb-2">
+                                <i data-lucide="shield-check" class="w-3.5 h-3.5"></i> ${p.badge}
+                            </span>
+                            <h2 class="text-xl sm:text-2xl font-extrabold text-brand-charcoal">${p.title}</h2>
+                            <p class="text-xs text-gray-500 flex items-center gap-1 mt-1">
+                                <i data-lucide="map-pin" class="w-4 h-4 text-brand-500"></i> ${p.thana}, ${p.district}, ${p.division} Division
+                            </p>
+                        </div>
+                        <div class="sm:text-right">
+                            <span class="text-xs text-gray-500 block uppercase font-bold">Asking Value</span>
+                            <span class="text-2xl font-black text-brand-500">৳${p.price.toLocaleString('en-BD')}</span>
+                            <span class="text-xs text-gray-500">${p.priceUnit}</span>
+                        </div>
+                    </div>
+
+                    <!-- Highlights Grid -->
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-2xl text-xs font-medium">
+                        <div><span class="text-gray-400 block text-[10px] uppercase">Property Type</span><strong class="text-sm text-brand-charcoal">${p.type}</strong></div>
+                        <div><span class="text-gray-400 block text-[10px] uppercase">Bedrooms</span><strong class="text-sm text-brand-charcoal">${p.beds} BHK</strong></div>
+                        <div><span class="text-gray-400 block text-[10px] uppercase">Bathrooms</span><strong class="text-sm text-brand-charcoal">${p.baths} Baths</strong></div>
+                        <div><span class="text-gray-400 block text-[10px] uppercase">Total Area</span><strong class="text-sm text-brand-charcoal">${p.size} sqft</strong></div>
+                    </div>
+
+                    <!-- Description -->
+                    <div>
+                        <h4 class="text-sm font-bold uppercase text-gray-700 mb-2">About Property</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed">${p.description}</p>
+                    </div>
+
+                    <!-- Amenities -->
+                    <div>
+                        <h4 class="text-sm font-bold uppercase text-gray-700 mb-3">Features & Amenities</h4>
+                        <div class="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                            ${(p.amenities || ['Gas Line', 'Lift', 'Security']).map(a => `
+                                <div class="flex items-center gap-2 text-xs text-gray-700 bg-brand-warmbg p-2.5 rounded-lg border border-gray-100">
+                                    <i data-lucide="check" class="w-4 h-4 text-emerald-600"></i>
+                                    <span>${a}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Location Map Placeholder -->
+                    <div>
+                        <h4 class="text-sm font-bold uppercase text-gray-700 mb-2">Location Map</h4>
+                        <div class="h-40 bg-gray-100 rounded-xl border flex items-center justify-center text-xs text-gray-500 flex-col gap-2">
+                            <i data-lucide="map" class="w-8 h-8 text-gray-400"></i>
+                            <span>Interactive Google Map Representation (${p.thana}, ${p.district})</span>
+                        </div>
+                    </div>
+
+                    <!-- Agency Core Intermediary Card -->
+                    <div class="bg-brand-50 p-5 rounded-2xl border border-brand-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 rounded-full bg-brand-500 text-white flex items-center justify-center font-bold text-lg">
+                                BS
+                            </div>
+                            <div>
+                                <h4 class="font-bold text-sm">BariSetu Real Estate Agency</h4>
+                                <p class="text-xs text-gray-600">Represented by Senior Property Advisor · Verified Listing</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <button onclick="openVisitModal('${p.id}')" class="w-full sm:w-auto px-5 py-2.5 bg-brand-500 text-white font-bold text-xs rounded-xl hover:bg-brand-600 transition flex items-center justify-center gap-1.5">
+                                <i data-lucide="calendar" class="w-4 h-4"></i> Schedule Guided Visit
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.remove('hidden');
+            if (window.lucide) lucide.createIcons();
+        }
+
+        function closePropertyModal() {
+            document.getElementById('property-modal').classList.add('hidden');
+        }
+
+        // ------------------------------------------------------------------
+        // VISIT MODAL HANDLERS
+        // ------------------------------------------------------------------
+        function openVisitModal(propertyId) {
+            document.getElementById('visit-property-id').value = propertyId;
+            document.getElementById('visit-modal').classList.remove('hidden');
+        }
+
+        function closeVisitModal() {
+            document.getElementById('visit-modal').classList.add('hidden');
+        }
+
+        function handleVisitSubmit(e) {
+            e.preventDefault();
+            const pid = document.getElementById('visit-property-id').value;
+            const name = document.getElementById('visit-name').value;
+            const phone = document.getElementById('visit-phone').value;
+            const date = document.getElementById('visit-date').value;
+
+            // Push to mock CRM leads
+            CRM_LEADS.unshift({
+                id: `L-${Math.floor(100 + Math.random() * 900)}`,
+                name: name,
+                phone: phone,
+                property: pid,
+                budget: 'Direct Inquiry',
+                status: 'Visit Scheduled',
+                date: date,
+                notes: `Client requested visit on ${date}`
+            });
+
+            closeVisitModal();
+            closePropertyModal();
+            showToast(`Visit scheduled successfully! BariSetu agency will call ${phone} shortly.`, 'success');
+        }
+
+        // ------------------------------------------------------------------
+        // VIEW: MULTI-STEP "LIST YOUR PROPERTY" FORM
+        // ------------------------------------------------------------------
+        let currentStep = 1;
+
+        function renderListPropertyView() {
+            return `
+                <div class="max-w-3xl mx-auto px-4 py-12">
+                    <div class="text-center mb-8">
+                        <span class="text-xs font-bold text-brand-500 uppercase tracking-wider">Property Owner Service</span>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-charcoal mt-1">List Your Property with BariSetu Agency</h1>
+                        <p class="text-xs text-gray-500 mt-1">Submit your rental or sales listing for agency inspection & customer lead matching.</p>
+                    </div>
+
+                    <!-- Progress Indicator Bar -->
+                    <div class="mb-8">
+                        <div class="flex justify-between text-xs font-bold text-gray-500 mb-2">
+                            <span id="step-label-1" class="text-brand-500">1. Purpose</span>
+                            <span id="step-label-2">2. Type & Location</span>
+                            <span id="step-label-3">3. Specs & Price</span>
+                            <span id="step-label-4">4. Owner Contact</span>
+                        </div>
+                        <div class="w-full bg-gray-200 h-2 rounded-full overflow-hidden">
+                            <div id="step-progress-bar" class="bg-brand-500 h-full w-1/4 transition-all duration-300"></div>
+                        </div>
+                    </div>
+
+                    <!-- Multi-step Form Card -->
+                    <div class="bg-white rounded-2xl border border-gray-200 p-6 sm:p-8 shadow-sm">
+                        <form id="listing-multistep-form" onsubmit="handleFormNext(event)">
+                            <!-- STEP 1: PURPOSE -->
+                            <div id="form-step-1" class="space-y-6">
+                                <h3 class="font-bold text-lg text-brand-charcoal">What is the purpose of your listing?</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <label class="border-2 border-brand-500 bg-brand-50 p-5 rounded-2xl cursor-pointer block">
+                                        <input type="radio" name="listing_purpose" value="Rent" checked class="sr-only">
+                                        <i data-lucide="key" class="w-6 h-6 text-brand-500 mb-2"></i>
+                                        <strong class="block font-bold text-sm">Rent Out Property</strong>
+                                        <span class="text-xs text-gray-500">Find verified tenants for apartment, room, or commercial space.</span>
+                                    </label>
+                                    <label class="border-2 border-gray-200 p-5 rounded-2xl cursor-pointer block hover:border-brand-500 transition">
+                                        <input type="radio" name="listing_purpose" value="Sell" class="sr-only">
+                                        <i data-lucide="home" class="w-6 h-6 text-brand-500 mb-2"></i>
+                                        <strong class="block font-bold text-sm">Sell Property / Flat</strong>
+                                        <span class="text-xs text-gray-500">Sell ready flat, plot, or commercial space through agency.</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- STEP 2: TYPE & LOCATION -->
+                            <div id="form-step-2" class="space-y-4 hidden">
+                                <h3 class="font-bold text-lg text-brand-charcoal">Property Type & Location</h3>
+                                <div class="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Property Category</label>
+                                        <select id="form-type" class="w-full border rounded-xl p-3 text-xs font-medium">
+                                            <option>Apartment</option>
+                                            <option>House / Villa</option>
+                                            <option>Commercial Office</option>
+                                            <option>Shop Space</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Division</label>
+                                        <select id="form-division" class="w-full border rounded-xl p-3 text-xs font-medium">
+                                            ${Object.keys(BD_LOCATIONS).map(div => `<option>${div}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Thana / Specific Area Address</label>
+                                    <input type="text" id="form-thana" placeholder="e.g. Sector 4, Uttara, Dhaka" class="w-full border rounded-xl p-3 text-xs font-medium">
+                                </div>
+                            </div>
+
+                            <!-- STEP 3: SPECS & PRICE -->
+                            <div id="form-step-3" class="space-y-4 hidden">
+                                <h3 class="font-bold text-lg text-brand-charcoal">Specifications & Asking Price</h3>
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Bedrooms</label>
+                                        <input type="number" id="form-beds" value="3" class="w-full border rounded-xl p-3 text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Bathrooms</label>
+                                        <input type="number" id="form-baths" value="3" class="w-full border rounded-xl p-3 text-xs">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Size (Sqft)</label>
+                                        <input type="number" id="form-size" value="1450" class="w-full border rounded-xl p-3 text-xs">
+                                    </div>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Expected Rent or Sales Price (BDT)</label>
+                                    <input type="number" id="form-price" placeholder="e.g. 35000 or 15000000" class="w-full border rounded-xl p-3 text-xs">
+                                </div>
+                            </div>
+
+                            <!-- STEP 4: OWNER CONTACT -->
+                            <div id="form-step-4" class="space-y-4 hidden">
+                                <h3 class="font-bold text-lg text-brand-charcoal">Owner / Contact Information</h3>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Your Full Name</label>
+                                    <input type="text" id="form-owner-name" placeholder="Property Owner Name" class="w-full border rounded-xl p-3 text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-500 mb-1">Contact Phone Number</label>
+                                    <input type="tel" id="form-owner-phone" placeholder="01711XXXXXX" class="w-full border rounded-xl p-3 text-xs">
+                                </div>
+                            </div>
+
+                            <!-- Navigation Buttons -->
+                            <div class="mt-8 flex justify-between items-center pt-4 border-t">
+                                <button type="button" id="prev-step-btn" onclick="prevFormStep()" class="px-5 py-2.5 text-xs font-bold text-gray-500 hover:text-black hidden">Previous</button>
+                                <button type="submit" id="next-step-btn" class="ml-auto px-7 py-3 bg-brand-500 text-white font-bold text-xs rounded-xl hover:bg-brand-600 transition">Continue to Next Step</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleFormNext(e) {
+            e.preventDefault();
+            if (currentStep < 4) {
+                document.getElementById(`form-step-${currentStep}`).classList.add('hidden');
+                currentStep++;
+                document.getElementById(`form-step-${currentStep}`).classList.remove('hidden');
+                updateFormProgress();
+            } else {
+                // Submit Form
+                showToast('Property submitted for agency review! Our team will inspect soon.', 'success');
+                currentStep = 1;
+                switchView('home');
+            }
+        }
+
+        function prevFormStep() {
+            if (currentStep > 1) {
+                document.getElementById(`form-step-${currentStep}`).classList.add('hidden');
+                currentStep--;
+                document.getElementById(`form-step-${currentStep}`).classList.remove('hidden');
+                updateFormProgress();
+            }
+        }
+
+        function updateFormProgress() {
+            const bar = document.getElementById('step-progress-bar');
+            const prevBtn = document.getElementById('prev-step-btn');
+            const nextBtn = document.getElementById('next-step-btn');
+
+            bar.style.width = `${(currentStep / 4) * 100}%`;
+            if (currentStep > 1) prevBtn.classList.remove('hidden');
+            else prevBtn.classList.add('hidden');
+
+            if (currentStep === 4) nextBtn.textContent = 'Submit Listing for Review';
+            else nextBtn.textContent = 'Continue to Next Step';
+        }
+
+        // ------------------------------------------------------------------
+        // VIEW: AGENCY SERVICES PAGE
+        // ------------------------------------------------------------------
+        function renderAgencyServicesView() {
+            return `
+                <div class="bg-brand-warmbg py-12 border-b">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center max-w-3xl">
+                        <span class="text-xs font-bold text-brand-500 uppercase tracking-wider">Professional Real Estate Intermediary</span>
+                        <h1 class="text-3xl font-extrabold text-brand-charcoal mt-1">Services for Property Owners & Buyers</h1>
+                        <p class="text-sm text-gray-600 mt-2">BariSetu bridges the gap in Bangladeshi real estate by offering end-to-end agency representation, screening, and legal support.</p>
+                    </div>
+                </div>
+
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
+                    <!-- Owner Services Grid -->
+                    <div>
+                        <h2 class="text-xl font-bold mb-6 text-brand-charcoal flex items-center gap-2">
+                            <i data-lucide="building" class="w-5 h-5 text-brand-500"></i> Services for Property Owners
+                        </h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div class="bg-white p-6 rounded-2xl border border-gray-200">
+                                <i data-lucide="camera" class="w-8 h-8 text-brand-500 mb-3"></i>
+                                <h3 class="font-bold text-base">Professional Listing & Marketing</h3>
+                                <p class="text-xs text-gray-500 mt-2">High-resolution photography, 3D room specs, and targeted digital marketing to serious buyers.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-gray-200">
+                                <i data-lucide="user-check" class="w-8 h-8 text-brand-500 mb-3"></i>
+                                <h3 class="font-bold text-base">Tenant & Buyer Vetting</h3>
+                                <p class="text-xs text-gray-500 mt-2">Background check, income verification, and screening of all incoming inquiries.</p>
+                            </div>
+                            <div class="bg-white p-6 rounded-2xl border border-gray-200">
+                                <i data-lucide="file-text" class="w-8 h-8 text-brand-500 mb-3"></i>
+                                <h3 class="font-bold text-base">Deed & Agreement Assistance</h3>
+                                <p class="text-xs text-gray-500 mt-2">Standard rental tenancy contract drafting and sale deed closing coordination.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ------------------------------------------------------------------
+        // VIEW: CUSTOMER DASHBOARD
+        // ------------------------------------------------------------------
+        function renderDashboardView() {
+            const savedList = PROPERTIES.filter(p => savedProperties.includes(p.id));
+            const recentList = PROPERTIES.filter(p => recentlyViewed.includes(p.id));
+
+            return `
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-brand-charcoal mb-2">Customer Dashboard</h1>
+                    <p class="text-xs text-gray-500 mb-8">Manage your saved shortlists, recently viewed properties, and inquiry schedules.</p>
+
+                    <!-- Tabs -->
+                    <div class="space-y-8">
+                        <!-- Saved Properties -->
+                        <div>
+                            <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-brand-charcoal">
+                                <i data-lucide="heart" class="w-5 h-5 text-brand-500"></i> Saved Shortlisted Properties (${savedList.length})
+                            </h3>
+                            ${savedList.length === 0 ? `
+                                <p class="text-xs text-gray-500 bg-white p-6 rounded-xl border">No saved properties yet. Click the heart icon on any listing card to save it here.</p>
+                            ` : `
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    ${savedList.map(p => renderPropertyCard(p)).join('')}
+                                </div>
+                            `}
+                        </div>
+
+                        <!-- Recently Viewed -->
+                        <div>
+                            <h3 class="font-bold text-lg mb-4 flex items-center gap-2 text-brand-charcoal">
+                                <i data-lucide="clock" class="w-5 h-5 text-indigo-500"></i> Recently Viewed Properties
+                            </h3>
+                            ${recentList.length === 0 ? `
+                                <p class="text-xs text-gray-500 bg-white p-6 rounded-xl border">You have not viewed any property details in this session.</p>
+                            ` : `
+                                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    ${recentList.map(p => renderPropertyCard(p)).join('')}
+                                </div>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ------------------------------------------------------------------
+        // VIEW: INTERNAL AGENCY CRM DASHBOARD
+        // ------------------------------------------------------------------
+        function renderCRMView() {
+            return `
+                <div class="bg-gray-900 text-white min-h-screen p-6">
+                    <div class="max-w-7xl mx-auto space-y-6">
+                        <div class="flex items-center justify-between pb-4 border-b border-gray-800">
+                            <div>
+                                <span class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Internal Staff Tool</span>
+                                <h1 class="text-2xl font-bold">BariSetu Agency Lead CRM</h1>
+                            </div>
+                            <span class="text-xs bg-gray-800 px-3 py-1 rounded-full text-gray-300">Live Operations</span>
+                        </div>
+
+                        <!-- Stats Overview -->
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                                <span class="text-xs text-gray-400 block">Active Listings</span>
+                                <strong class="text-2xl font-bold text-white">${PROPERTIES.length}</strong>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                                <span class="text-xs text-gray-400 block">Total Inquiries</span>
+                                <strong class="text-2xl font-bold text-brand-500">${CRM_LEADS.length}</strong>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                                <span class="text-xs text-gray-400 block">Visits Scheduled</span>
+                                <strong class="text-2xl font-bold text-amber-400">12</strong>
+                            </div>
+                            <div class="bg-gray-800 p-4 rounded-xl border border-gray-700">
+                                <span class="text-xs text-gray-400 block">Closed Deals (This Mo)</span>
+                                <strong class="text-2xl font-bold text-emerald-400">8</strong>
+                            </div>
+                        </div>
+
+                        <!-- Lead Pipeline Cards -->
+                        <div>
+                            <h3 class="font-bold text-base mb-4">Customer Inquiry Pipeline</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                ${CRM_LEADS.map(lead => `
+                                    <div class="bg-gray-800 p-4 rounded-xl border border-gray-700 space-y-3">
+                                        <div class="flex justify-between items-start">
+                                            <span class="text-xs font-bold px-2 py-0.5 rounded bg-brand-500/20 text-brand-400 border border-brand-500/30">${lead.status}</span>
+                                            <span class="text-[10px] text-gray-400">${lead.date}</span>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-bold text-sm text-white">${lead.name}</h4>
+                                            <p class="text-xs text-emerald-400">${lead.phone}</p>
+                                        </div>
+                                        <p class="text-xs text-gray-300">Property: <strong>${lead.property}</strong></p>
+                                        <p class="text-[11px] text-gray-400 italic bg-gray-900 p-2 rounded">"${lead.notes}"</p>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ------------------------------------------------------------------
+        // HELPER LOGIC (Search, Favorites, Filter Execution)
+        // ------------------------------------------------------------------
+        function setHeroTab(tabName) {
+            activeCategoryTab = tabName;
+            document.querySelectorAll('[id^="tab-"]').forEach(btn => btn.className = 'pb-3 text-sm font-bold text-gray-500 hover:text-brand-500 flex items-center gap-2 whitespace-nowrap');
+            document.getElementById(`tab-${tabName}`).className = 'pb-3 text-sm font-bold active-tab flex items-center gap-2 whitespace-nowrap';
+        }
+
+        function executeHeroSearch() {
+            const div = document.getElementById('hero-division').value;
+            const type = document.getElementById('hero-type').value;
+            const beds = document.getElementById('hero-beds').value;
+
+            activeFilters.division = div;
+            activeFilters.type = type;
+            activeFilters.beds = beds || 'any';
+
+            if (activeCategoryTab === 'Rent') switchView('rent');
+            else if (activeCategoryTab === 'Buy Ready Flat') switchView('buy');
+            else switchView('book');
+        }
+
+        function toggleSaveProperty(id, event) {
+            if (event) event.stopPropagation();
+            if (savedProperties.includes(id)) {
+                savedProperties = savedProperties.filter(item => item !== id);
+                showToast('Removed from saved shortlist', 'info');
+            } else {
+                savedProperties.push(id);
+                showToast('Property saved to shortlist!', 'success');
+            }
+            localStorage.setItem('barisetu_saved', JSON.stringify(savedProperties));
+            updateSavedCount();
+            renderView(currentView);
+        }
+
+        function updateSavedCount() {
+            const badge = document.getElementById('saved-count-badge');
+            if (badge) badge.textContent = savedProperties.length;
+        }
+
+        function applyFilter(key, val, purpose) {
+            activeFilters[key] = val;
+            renderView(currentView);
+        }
+
+        function resetFilters(purpose) {
+            activeFilters = { division: '', district: '', thana: '', type: '', minPrice: 0, maxPrice: 50000000, beds: 'any' };
+            renderView(currentView);
+        }
+
+        function toggleCompare(id) {
+            if (compareProperties.includes(id)) {
+                compareProperties = compareProperties.filter(i => i !== id);
+            } else {
+                if (compareProperties.length >= 3) {
+                    showToast('You can compare maximum 3 properties at once.', 'info');
+                    return;
+                }
+                compareProperties.push(id);
+            }
+
+            const bar = document.getElementById('compare-bar');
+            const count = document.getElementById('compare-count');
+            if (compareProperties.length > 0) {
+                bar.classList.remove('hidden');
+                count.textContent = compareProperties.length;
+            } else {
+                bar.classList.add('hidden');
+            }
+        }
+
+        function clearCompareList() {
+            compareProperties = [];
+            document.getElementById('compare-bar').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
